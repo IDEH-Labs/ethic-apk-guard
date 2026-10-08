@@ -1,10 +1,19 @@
 <resources>
     <string name="app_name">Ethic APK Guard</string>
 
+    <string name="eyebrow_analyze">ANALIZA ANTES DE INSTALAR</string>
+    <string name="subtitle_analyze">Comprueba una APK antes de instalarla.</string>
+    <string name="privacy_banner">Análisis local. No instalamos automáticamente, desinstalamos, enviamos ni conservamos tu APK.</string>
+    <string name="btn_choose_apk">Elegir una APK</string>
+    <string name="btn_choose_apk_desc">Elegir una APK para analizar sin instalarla</string>
+    <string name="status_select_apk">Selecciona una APK desde el selector de archivos de Android.</string>
+    <string name="limits_title">Qué comprueba</string>
+    <string name="limits_desc">Paquete, versión, certificado, historial de firma declarado, Android mínimo, bibliotecas nativas, código DEX y permisos sensibles nuevos. Reconoce paquetes divididos, pero sólo instala APK únicas. Android conserva la decisión final.</string>
+
     <!-- Menú y Proyectos -->
     <string name="menu_title">Acerca de nosotros</string>
     <string name="ecosystem_section">Proyectos</string>
-    <string name="ecosystem_desc">Aplicaciones soberanas, 100% offline y de código libre copyleft creadas por jpi59.</string>
+    <string name="ecosystem_desc">Aplicaciones soberanas, 100% offline y de código libre copyleft creadas por IDEH Labs.</string>
     <string name="app_installed">Instalada</string>
     <string name="app_open">Abrir</string>
     <string name="app_view">Ver</string>
@@ -16,6 +25,125 @@
     <string name="technical_info_section">Integridad Técnica</string>
     <string name="package_id_label">Identificador del paquete</string>
     <string name="key_fingerprint_label">Certificado de firma (SHA-256)</string>
-    <string name="guard_badge">0 Permisos Declarados · 100% Offline</string>
+    <string name="guard_badge">Auditoría Local · Cero Telemetría</string>
     <string name="done">Listo</string>
+
+    <!-- Estado del análisis y errores -->
+    <string name="status_analyzing">Analizando localmente…</string>
+    <string name="status_analysis_finished">Análisis terminado. La APK no fue instalada.</string>
+    <string name="status_analysis_failed">No se pudo analizar la selección.</string>
+    <string name="verdict_read_error">No se pudo leer la APK</string>
+    <string name="explanation_read_error">El archivo no pudo abrirse mediante Android.</string>
+
+    <!-- Filas de resultados -->
+    <string name="row_package">Paquete</string>
+    <string name="row_candidate_apk">APK elegida</string>
+    <string name="row_installed">Instalada</string>
+    <string name="row_signer">Firma de APK</string>
+    <string name="row_libraries">Bibliotecas</string>
+    <string name="row_added_permissions">Permisos sensibles nuevos</string>
+    <string name="row_security_impact">Impacto de seguridad</string>
+    <string name="not_available">No disponible</string>
+    <string name="not_installed">No instalada</string>
+    <string name="no_native_libs">sin bibliotecas nativas</string>
+    <string name="version_unnamed">sin nombre</string>
+    <string name="version_format">%1$s · código %2$d</string>
+
+    <!-- Compartir informe -->
+    <string name="btn_share_report">Compartir informe técnico</string>
+    <string name="btn_share_report_desc">Compartir un resumen técnico, sin la APK</string>
+    <string name="share_dialog_title">Compartir informe técnico</string>
+    <string name="share_dialog_msg">Se compartirá el identificador de paquete, versiones, firma abreviada y cambios detectados. No se comparte la APK ni una lista de tus aplicaciones.</string>
+    <string name="share_dialog_choose">Elegir destino</string>
+    <string name="share_chooser_title">Compartir informe</string>
+    <string name="report_title">Informe de Ethic APK Guard</string>
+    <string name="report_result_label">Resultado</string>
+    <string name="report_fdroid_data_label">Datos públicos de F-Droid</string>
+    <string name="report_desc_label">Descripción</string>
+    <string name="report_antifeatures_label">Anti‑Features</string>
+    <string name="report_none_declared">ninguno declarado; no es una certificación</string>
+    <string name="report_disclaimer">El análisis es local y no sustituye la decisión final de Android.</string>
+
+    <!-- Consulta F-Droid -->
+    <string name="btn_fdroid_lookup">Consultar datos públicos de F-Droid</string>
+    <string name="btn_fdroid_lookup_desc">Consultar F-Droid mediante una conexión opcional</string>
+    <string name="btn_fdroid_done">Consulta pública de F-Droid terminada</string>
+    <string name="fdroid_dialog_title">Consultar fuentes públicas</string>
+    <string name="fdroid_dialog_msg">Se enviarán por HTTPS a F-Droid y su repositorio público el identificador %1$s y el código de versión %2$d. No se envía la APK, su contenido, su hash ni una lista de aplicaciones. Los servidores pueden registrar la consulta.</string>
+    <string name="fdroid_dialog_query">Consultar</string>
+    <string name="status_querying_fdroid">Consultando registros públicos de F-Droid…</string>
+    <string name="status_query_completed">Consulta terminada. La APK no fue enviada ni instalada.</string>
+    <string name="status_query_failed">No se pudo consultar F-Droid: %s</string>
+    <string name="row_fdroid">F-Droid</string>
+    <string name="row_public_desc">Descripción pública</string>
+    <string name="row_antifeatures">Anti‑Features declarados</string>
+    <string name="row_verification">Verificación reproducible</string>
+    <string name="row_query_limit">Límite de la consulta</string>
+    <string name="antifeatures_none">No se declararon en los metadatos consultados; esto no certifica seguridad.</string>
+    <string name="fdroid_not_found_versions">No aparece en el repositorio principal de F-Droid.</string>
+    <string name="fdroid_not_found_desc">No se consultaron metadatos porque el paquete no figura en el catálogo principal.</string>
+    <string name="fdroid_not_found_verify">Sin registro de F-Droid.</string>
+    <string name="fdroid_not_found_note">Esto no determina si la APK es segura o insegura; sólo indica que no está publicada actualmente en el repositorio principal.</string>
+    <string name="fdroid_desc_unavailable">Descripción no disponible en los metadatos consultados.</string>
+    <string name="fdroid_versions_published">Publicado en F-Droid: %d versión(es).</string>
+    <string name="fdroid_suggested_version"> Versión sugerida: código %d.</string>
+    <string name="fdroid_candidate_in_catalog"> La versión seleccionada figura en el catálogo.</string>
+    <string name="fdroid_candidate_not_in_catalog"> La versión seleccionada no figura en el catálogo actual.</string>
+    <string name="fdroid_verify_no_record">No hay registro público de verificación reproducible para este paquete.</string>
+    <string name="fdroid_verify_version_found">Hay un reporte público de verificación para esta versión.</string>
+    <string name="fdroid_verify_other_version">El paquete tiene registros públicos de verificación, pero no se encontró uno para la versión seleccionada.</string>
+    <string name="fdroid_note_default">Fuentes consultadas: API pública, metadatos y verificación de F-Droid. Ausencia de Anti‑Features o de reportes no es una certificación de seguridad.</string>
+    <string name="fdroid_err_invalid_pkg">El identificador de paquete no es válido para una consulta pública.</string>
+    <string name="fdroid_err_http">F-Droid respondió HTTP %d.</string>
+    <string name="fdroid_err_too_large">La respuesta pública es demasiado grande.</string>
+
+    <!-- Instalación y Advertencias -->
+    <string name="btn_blocked_signature">Actualización bloqueada por firma distinta</string>
+    <string name="btn_install_new">Instalar como aplicación distinta</string>
+    <string name="btn_open_installer">Abrir instalador de Android</string>
+    <string name="btn_install_desc">Pedir a Android que instale la APK analizada</string>
+    <string name="warn_new_app">Esta APK no actualiza una app existente: Android la tratará como una aplicación distinta y tendrá sus propios datos.</string>
+    <string name="warn_caution">Hay una advertencia en el informe. Android puede rechazar la instalación o requerir una decisión adicional.</string>
+    <string name="warn_safe">La compatibilidad parece adecuada según el análisis local, pero Android conserva la decisión final.</string>
+    <string name="dialog_installer_title">Abrir instalador de Android</string>
+    <string name="dialog_installer_disclaimer">Ethic APK Guard no instalará nada por sí sola. A continuación se abrirá la pantalla oficial de Android, donde podrás cancelar o confirmar.</string>
+    <string name="btn_cancel">Cancelar</string>
+    <string name="btn_continue">Continuar</string>
+    <string name="btn_open_settings">Abrir ajustes</string>
+    <string name="dialog_sources_title">Permiso de fuente de instalación</string>
+    <string name="dialog_sources_msg">Android requiere permitir que Ethic APK Guard solicite una instalación. Esto no habilita instalaciones silenciosas: Android seguirá mostrando la confirmación final.</string>
+    <string name="status_selection_unavailable">La selección ya no está disponible. Elige la APK otra vez.</string>
+    <string name="status_installer_handoff">El instalador de Android decidirá el siguiente paso.</string>
+    <string name="status_installer_failed">Android no pudo abrir el instalador: %s</string>
+    <string name="clip_analyzed_apk">APK analizada</string>
+    <string name="err_network_format">error de red o de formato</string>
+
+    <!-- Veredictos e Impacto de Seguridad -->
+    <string name="verdict_split_title">Paquete dividido detectado (%s)</string>
+    <string name="verdict_split_desc">Este archivo contiene varias APK que deben instalarse juntas. Ethic APK Guard sólo analiza e instala APK únicas; no extraigas ni instales una parte por separado. Esto no indica que el archivo sea seguro o dañino.</string>
+    <string name="verdict_no_dex_title">No es una APK base instalable</string>
+    <string name="verdict_no_dex_desc">Falta classes.dex. Puede ser un módulo dividido o un archivo incompleto; no lo instales como APK independiente.</string>
+    <string name="verdict_unreadable_title">La APK no se pudo leer</string>
+    <string name="verdict_unreadable_desc">Android no reconoció un manifiesto de paquete válido. El archivo no fue modificado.</string>
+    <string name="verdict_min_sdk_title">Android del dispositivo es demasiado antiguo</string>
+    <string name="verdict_min_sdk_desc">La APK requiere Android %1$d y este dispositivo ejecuta API %2$d.</string>
+    <string name="verdict_abi_mismatch_title">La arquitectura no coincide</string>
+    <string name="verdict_abi_mismatch_desc">La APK contiene bibliotecas para %s, no para la arquitectura de este dispositivo.</string>
+    <string name="verdict_new_app_title">Es una instalación nueva</string>
+    <string name="verdict_new_app_desc">No hay una app instalada con el identificador exacto %s. El nombre o icono visible no basta para actualizar: Android la tratará como una aplicación distinta, con datos separados.</string>
+    <string name="verdict_signature_mismatch_title">No es una actualización segura</string>
+    <string name="verdict_signature_mismatch_desc">El certificado de esta APK no coincide con el de la app instalada. Android normalmente exigirá desinstalar la app anterior; eso puede borrar sus datos locales.</string>
+    <string name="verdict_older_version_title">No es una versión más reciente</string>
+    <string name="verdict_older_version_desc">La APK seleccionada tiene código %1$d y la instalada tiene %2$d. Android puede rechazarla como actualización o degradación.</string>
+    <string name="verdict_compatible_title">Actualización compatible</string>
+    <string name="verdict_compatible_desc">El identificador, la versión y el certificado de firma actual coinciden. Android debería conservar los datos de la app al actualizar.</string>
+    <string name="verdict_rotation_title">Cambio de certificado declarado</string>
+    <string name="verdict_rotation_desc">La APK declara el certificado instalado en su historial de firma. Android puede aceptar una rotación válida, pero esta comprobación no sustituye al instalador del sistema.</string>
+    <string name="permissions_suffix"> También solicita nuevos permisos sensibles: %s.</string>
+    <string name="sec_change_debuggable">La APK candidata permite depuración</string>
+    <string name="sec_change_cleartext">Activa tráfico HTTP no cifrado</string>
+    <string name="sec_change_backup">Permite copias de seguridad de la app</string>
+    <string name="sec_change_lowered_sdk">Reduce el SDK objetivo: %1$d → %2$d</string>
+    <string name="sec_change_exported">Nuevo componente exportado: %s</string>
+    <string name="err_open_selected_file">No se pudo abrir el archivo seleccionado.</string>
 </resources>

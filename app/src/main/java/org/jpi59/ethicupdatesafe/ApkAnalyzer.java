@@ -11,7 +11,6 @@ import android.content.pm.Signature;
 import android.os.Build;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -33,6 +32,7 @@ final class ApkAnalyzer {
         final String explanation;
         final String packageName;
         final String candidateVersion;
+        final long candidateVersionCode;
         final String installedVersion;
         final String signer;
         final String architecture;
@@ -40,13 +40,14 @@ final class ApkAnalyzer {
         final Set<String> securityChanges;
 
         Result(Verdict verdict, String headline, String explanation, String packageName,
-               String candidateVersion, String installedVersion, String signer,
+               String candidateVersion, long candidateVersionCode, String installedVersion, String signer,
                String architecture, Set<String> addedDangerousPermissions, Set<String> securityChanges) {
             this.verdict = verdict;
             this.headline = headline;
             this.explanation = explanation;
             this.packageName = packageName;
             this.candidateVersion = candidateVersion;
+            this.candidateVersionCode = candidateVersionCode;
             this.installedVersion = installedVersion;
             this.signer = signer;
             this.architecture = architecture;
@@ -59,49 +60,50 @@ final class ApkAnalyzer {
 
     static Result analyze(Context context, File apk) throws IOException {
         PackageManager pm = context.getPackageManager();
-        ArchiveFacts facts = inspectArchive(apk);
+        ArchiveFacts facts = inspectArchive(context, apk);
         if (!facts.hasDex) {
             if (facts.bundleFormat != null) {
-                return result(Verdict.INVALID, "Paquete dividido detectado (" + facts.bundleFormat + ")",
-                        "Este archivo contiene varias APK que deben instalarse juntas. Ethic APK Guard sólo analiza e instala APK únicas; no extraigas ni instales una parte por separado. Esto no indica que el archivo sea seguro o dañino.",
-                        null, "—", "—", "—", facts.architecture, Collections.emptySet());
+                return result(Verdict.INVALID, context.getString(R.string.verdict_split_title, facts.bundleFormat),
+                        context.getString(R.string.verdict_split_desc),
+                        null, "—", -1, "—", "—", facts.architecture, Collections.emptySet());
             }
-            return result(Verdict.INVALID, "No es una APK base instalable",
-                    "Falta classes.dex. Puede ser un módulo dividido o un archivo incompleto; no lo instales como APK independiente.",
-                    null, "—", "—", "—", facts.architecture, Collections.emptySet());
+            return result(Verdict.INVALID, context.getString(R.string.verdict_no_dex_title),
+                    context.getString(R.string.verdict_no_dex_desc),
+                    null, "—", -1, "—", "—", facts.architecture, Collections.emptySet());
         }
 
         PackageInfo candidate = pm.getPackageArchiveInfo(apk.getAbsolutePath(), packageFlags());
         if (candidate == null || candidate.applicationInfo == null || candidate.packageName == null) {
-            return result(Verdict.INVALID, "La APK no se pudo leer",
-                    "Android no reconoció un manifiesto de paquete válido. El archivo no fue modificado.",
-                    null, "—", "—", "—", facts.architecture, Collections.emptySet());
+            return result(Verdict.INVALID, context.getString(R.string.verdict_unreadable_title),
+                    context.getString(R.string.verdict_unreadable_desc),
+                    null, "—", -1, "—", "—", facts.architecture, Collections.emptySet());
         }
         candidate.applicationInfo.sourceDir = apk.getAbsolutePath();
         candidate.applicationInfo.publicSourceDir = apk.getAbsolutePath();
-        String candidateVersion = version(candidate);
+        String candidateVersion = version(context, candidate);
+        long candidateCode = versionCode(candidate);
         int minSdk = candidate.applicationInfo.minSdkVersion;
         if (minSdk > Build.VERSION.SDK_INT) {
-            return result(Verdict.CAUTION, "Android del dispositivo es demasiado antiguo",
-                    "La APK requiere Android " + minSdk + " y este dispositivo ejecuta API " + Build.VERSION.SDK_INT + ".",
-                    candidate.packageName, candidateVersion, "—", signerSummary(candidate), facts.architecture, Collections.emptySet());
+            return result(Verdict.CAUTION, context.getString(R.string.verdict_min_sdk_title),
+                    context.getString(R.string.verdict_min_sdk_desc, minSdk, Build.VERSION.SDK_INT),
+                    candidate.packageName, candidateVersion, candidateCode, "—", signerSummary(context, candidate), facts.architecture, Collections.emptySet());
         }
         if (!facts.abiCompatible) {
-            return result(Verdict.CAUTION, "La arquitectura no coincide",
-                    "La APK contiene bibliotecas para " + facts.architecture + ", no para la arquitectura de este dispositivo.",
-                    candidate.packageName, candidateVersion, "—", signerSummary(candidate), facts.architecture, Collections.emptySet());
+            return result(Verdict.CAUTION, context.getString(R.string.verdict_abi_mismatch_title),
+                    context.getString(R.string.verdict_abi_mismatch_desc, facts.architecture),
+                    candidate.packageName, candidateVersion, candidateCode, "—", signerSummary(context, candidate), facts.architecture, Collections.emptySet());
         }
 
         PackageInfo installed = installed(pm, candidate.packageName);
         if (installed == null) {
-            return result(Verdict.NEW_APP, "Es una instalación nueva",
-                    "No hay una app instalada con el identificador exacto " + candidate.packageName + ". El nombre o icono visible no basta para actualizar: Android la tratará como una aplicación distinta, con datos separados.",
-                    candidate.packageName, candidateVersion, "No instalada", signerSummary(candidate), facts.architecture, Collections.emptySet());
+            return result(Verdict.NEW_APP, context.getString(R.string.verdict_new_app_title),
+                    context.getString(R.string.verdict_new_app_desc, candidate.packageName),
+                    candidate.packageName, candidateVersion, candidateCode, context.getString(R.string.not_installed), signerSummary(context, candidate), facts.architecture, Collections.emptySet());
         }
 
         Set<String> addedPermissions = addedDangerousPermissions(pm, installed, candidate);
-        Set<String> securityChanges = securityChanges(installed, candidate);
-        String installedVersion = version(installed);
+        Set<String> securityChanges = securityChanges(context, installed, candidate);
+        String installedVersion = version(context, installed);
         Set<String> installedSigners = currentSigners(installed);
         Set<String> candidateSigners = currentSigners(candidate);
         boolean sameCurrentSigner = installedSigners.equals(candidateSigners) && !installedSigners.isEmpty();
@@ -109,26 +111,25 @@ final class ApkAnalyzer {
         // A signature mismatch is more important than a version comparison: a newer APK with
         // a different signer is the exact case that can tempt a user to uninstall and lose data.
         if (!sameCurrentSigner && !declaredRotation) {
-            return result(Verdict.REPLACE, "No es una actualización segura",
-                    permissionsSuffix("El certificado de esta APK no coincide con el de la app instalada. Android normalmente exigirá desinstalar la app anterior; eso puede borrar sus datos locales.", addedPermissions),
-                    candidate.packageName, candidateVersion, installedVersion, signerSummary(candidate), facts.architecture, addedPermissions, securityChanges);
+            return result(Verdict.REPLACE, context.getString(R.string.verdict_signature_mismatch_title),
+                    permissionsSuffix(context, context.getString(R.string.verdict_signature_mismatch_desc), addedPermissions),
+                    candidate.packageName, candidateVersion, candidateCode, installedVersion, signerSummary(context, candidate), facts.architecture, addedPermissions, securityChanges);
         }
         if (versionCode(candidate) <= versionCode(installed)) {
-            return result(Verdict.CAUTION, "No es una versión más reciente",
-                    "La APK seleccionada tiene código " + versionCode(candidate) + " y la instalada tiene " + versionCode(installed)
-                            + ". Android puede rechazarla como actualización o degradación.",
-                    candidate.packageName, candidateVersion, installedVersion, signerSummary(candidate), facts.architecture, addedPermissions, securityChanges);
+            return result(Verdict.CAUTION, context.getString(R.string.verdict_older_version_title),
+                    context.getString(R.string.verdict_older_version_desc, versionCode(candidate), versionCode(installed)),
+                    candidate.packageName, candidateVersion, candidateCode, installedVersion, signerSummary(context, candidate), facts.architecture, addedPermissions, securityChanges);
         }
 
         if (sameCurrentSigner) {
-            return result(Verdict.SAFE, "Actualización compatible",
-                    permissionsSuffix("El identificador, la versión y el certificado de firma actual coinciden. Android debería conservar los datos de la app al actualizar.", addedPermissions),
-                    candidate.packageName, candidateVersion, installedVersion, signerSummary(candidate), facts.architecture, addedPermissions, securityChanges);
+            return result(Verdict.SAFE, context.getString(R.string.verdict_compatible_title),
+                    permissionsSuffix(context, context.getString(R.string.verdict_compatible_desc), addedPermissions),
+                    candidate.packageName, candidateVersion, candidateCode, installedVersion, signerSummary(context, candidate), facts.architecture, addedPermissions, securityChanges);
         }
         if (declaredRotation) {
-            return result(Verdict.CAUTION, "Cambio de certificado declarado",
-                    permissionsSuffix("La APK declara el certificado instalado en su historial de firma. Android puede aceptar una rotación válida, pero esta comprobación no sustituye al instalador del sistema.", addedPermissions),
-                    candidate.packageName, candidateVersion, installedVersion, signerSummary(candidate), facts.architecture, addedPermissions, securityChanges);
+            return result(Verdict.CAUTION, context.getString(R.string.verdict_rotation_title),
+                    permissionsSuffix(context, context.getString(R.string.verdict_rotation_desc), addedPermissions),
+                    candidate.packageName, candidateVersion, candidateCode, installedVersion, signerSummary(context, candidate), facts.architecture, addedPermissions, securityChanges);
         }
         throw new AssertionError("All signing cases should be handled above.");
     }
@@ -136,23 +137,23 @@ final class ApkAnalyzer {
     static void copyToFile(Context context, android.net.Uri uri, File destination) throws IOException {
         try (java.io.InputStream input = context.getContentResolver().openInputStream(uri);
              FileOutputStream output = new FileOutputStream(destination)) {
-            if (input == null) throw new IOException("No se pudo abrir el archivo seleccionado.");
+            if (input == null) throw new IOException(context.getString(R.string.err_open_selected_file));
             byte[] buffer = new byte[32 * 1024];
             for (int read; (read = input.read(buffer)) != -1; ) output.write(buffer, 0, read);
         }
     }
 
     private static Result result(Verdict verdict, String headline, String explanation, String packageName,
-                                 String candidateVersion, String installedVersion, String signer,
+                                 String candidateVersion, long candidateVersionCode, String installedVersion, String signer,
                                  String architecture, Set<String> permissions) {
-        return result(verdict, headline, explanation, packageName, candidateVersion, installedVersion, signer,
+        return result(verdict, headline, explanation, packageName, candidateVersion, candidateVersionCode, installedVersion, signer,
                 architecture, permissions, Collections.emptySet());
     }
 
     private static Result result(Verdict verdict, String headline, String explanation, String packageName,
-                                 String candidateVersion, String installedVersion, String signer,
+                                 String candidateVersion, long candidateVersionCode, String installedVersion, String signer,
                                  String architecture, Set<String> permissions, Set<String> securityChanges) {
-        return new Result(verdict, headline, explanation, packageName, candidateVersion, installedVersion,
+        return new Result(verdict, headline, explanation, packageName, candidateVersion, candidateVersionCode, installedVersion,
                 signer, architecture, permissions, securityChanges);
     }
 
@@ -167,13 +168,13 @@ final class ApkAnalyzer {
         catch (PackageManager.NameNotFoundException ignored) { return null; }
     }
 
-    private static long versionCode(PackageInfo info) {
+    static long versionCode(PackageInfo info) {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ? info.getLongVersionCode() : info.versionCode;
     }
 
-    private static String version(PackageInfo info) {
-        String name = info.versionName == null ? "sin nombre" : info.versionName;
-        return name + " · código " + versionCode(info);
+    private static String version(Context context, PackageInfo info) {
+        String name = info.versionName == null ? context.getString(R.string.version_unnamed) : info.versionName;
+        return context.getString(R.string.version_format, name, versionCode(info));
     }
 
     private static Set<String> currentSigners(PackageInfo info) {
@@ -195,9 +196,9 @@ final class ApkAnalyzer {
         return values;
     }
 
-    private static String signerSummary(PackageInfo info) {
+    private static String signerSummary(Context context, PackageInfo info) {
         Set<String> values = currentSigners(info);
-        if (values.isEmpty()) return "No disponible";
+        if (values.isEmpty()) return context.getString(R.string.not_available);
         String digest = values.iterator().next();
         return digest.substring(0, Math.min(16, digest.length())) + "…";
     }
@@ -225,18 +226,18 @@ final class ApkAnalyzer {
     }
 
     /** Reports only update-relevant changes that can be read from public package metadata. */
-    private static Set<String> securityChanges(PackageInfo installed, PackageInfo candidate) {
+    private static Set<String> securityChanges(Context context, PackageInfo installed, PackageInfo candidate) {
         Set<String> changes = new LinkedHashSet<>();
         ApplicationInfo before = installed.applicationInfo;
         ApplicationInfo after = candidate.applicationInfo;
         if (after == null || before == null) return changes;
-        if ((after.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) changes.add("La APK candidata permite depuración");
-        if ((after.flags & ApplicationInfo.FLAG_USES_CLEARTEXT_TRAFFIC) != 0 && (before.flags & ApplicationInfo.FLAG_USES_CLEARTEXT_TRAFFIC) == 0) changes.add("Activa tráfico HTTP no cifrado");
-        if ((after.flags & ApplicationInfo.FLAG_ALLOW_BACKUP) != 0 && (before.flags & ApplicationInfo.FLAG_ALLOW_BACKUP) == 0) changes.add("Permite copias de seguridad de la app");
-        if (after.targetSdkVersion < before.targetSdkVersion) changes.add("Reduce el SDK objetivo: " + before.targetSdkVersion + " → " + after.targetSdkVersion);
+        if ((after.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) changes.add(context.getString(R.string.sec_change_debuggable));
+        if ((after.flags & ApplicationInfo.FLAG_USES_CLEARTEXT_TRAFFIC) != 0 && (before.flags & ApplicationInfo.FLAG_USES_CLEARTEXT_TRAFFIC) == 0) changes.add(context.getString(R.string.sec_change_cleartext));
+        if ((after.flags & ApplicationInfo.FLAG_ALLOW_BACKUP) != 0 && (before.flags & ApplicationInfo.FLAG_ALLOW_BACKUP) == 0) changes.add(context.getString(R.string.sec_change_backup));
+        if (after.targetSdkVersion < before.targetSdkVersion) changes.add(context.getString(R.string.sec_change_lowered_sdk, before.targetSdkVersion, after.targetSdkVersion));
         Set<String> newExported = exported(candidate);
         newExported.removeAll(exported(installed));
-        for (String component : newExported) changes.add("Nuevo componente exportado: " + component);
+        for (String component : newExported) changes.add(context.getString(R.string.sec_change_exported, component));
         return changes;
     }
 
@@ -260,9 +261,9 @@ final class ApkAnalyzer {
         return values;
     }
 
-    private static String permissionsSuffix(String base, Set<String> permissions) {
+    private static String permissionsSuffix(Context context, String base, Set<String> permissions) {
         if (permissions.isEmpty()) return base;
-        return base + " También solicita nuevos permisos sensibles: " + join(permissions) + ".";
+        return base + context.getString(R.string.permissions_suffix, join(permissions));
     }
 
     private static String join(Set<String> values) {
@@ -274,12 +275,16 @@ final class ApkAnalyzer {
     private static final class ArchiveFacts {
         boolean hasDex;
         boolean abiCompatible = true;
-        String architecture = "sin bibliotecas nativas";
+        String architecture;
         String bundleFormat;
+
+        ArchiveFacts(String defaultArchitecture) {
+            this.architecture = defaultArchitecture;
+        }
     }
 
-    private static ArchiveFacts inspectArchive(File file) throws IOException {
-        ArchiveFacts facts = new ArchiveFacts();
+    private static ArchiveFacts inspectArchive(Context context, File file) throws IOException {
+        ArchiveFacts facts = new ArchiveFacts(context.getString(R.string.no_native_libs));
         Set<String> abis = new LinkedHashSet<>();
         try (ZipFile zip = new ZipFile(file)) {
             java.util.Enumeration<? extends ZipEntry> entries = zip.entries();

@@ -1,1 +1,37 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><path fill="#176B5A" d="M24 3 42 10v12c0 12-7.7 19.6-18 23C13.7 41.6 6 34 6 22V10z"/><path fill="#F7F8F4" d="m18 23 4 4 9-10 3 3-12 13-7-7z"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+    <filter id="card-shadow" x="-15%" y="-15%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#0f172a" flood-opacity="0.32"/>
+    </filter>
+    <filter id="drop-shadow" x="-20%" y="-20%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#0f172a" flood-opacity="0.22"/>
+    </filter>
+    
+        <linearGradient id="inner-guard-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#4f46e5"/>
+          <stop offset="100%" stop-color="#1e40af"/>
+        </linearGradient>
+        
+  </defs>
+  
+  <!-- Transparent canvas with rounded squircle badge (Ideal for F-Droid web and client) -->
+  <rect x="24" y="24" width="464" height="464" rx="104" fill="url(#bg-grad)" filter="url(#card-shadow)"/>
+  
+  <!-- App Symbol -->
+  
+        <!-- Security Shield Base -->
+        <path d="M 256 120 L 356 165 C 356 270 300 340 256 376 C 212 340 156 270 156 165 Z" 
+              fill="#FFFFFF" filter="url(#drop-shadow)"/>
+        
+        <!-- Inner Shield Accent -->
+        <path d="M 256 142 L 336 178 C 336 262 292 318 256 348 C 220 318 176 262 176 178 Z" 
+              fill="url(#inner-guard-grad)"/>
+              
+        <!-- APK Package Verification Checkmark -->
+        <path d="M 218 244 L 244 270 L 298 206" fill="none" stroke="#FFFFFF" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+        
+</svg>

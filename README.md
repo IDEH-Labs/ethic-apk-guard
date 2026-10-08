@@ -12,7 +12,7 @@ After the local analysis, the user can separately and explicitly ask for public 
 
 The verdict is deliberately conservative: Android remains the final authority for installation, especially for split APKs and signing-certificate rotation.
 
-`QUERY_ALL_PACKAGES` is declared solely because Android otherwise hides a dynamically selected package from the comparison API. The app does not display, persist, or transmit a device-wide app list.
+`QUERY_ALL_PACKAGES` is declared because Android otherwise hides a dynamically selected package from the comparison API. In addition, `<queries>` declares known companion apps in the ecosystem to detect if they are installed and offer an "Open" action in the About menu. The app does not display, persist, or transmit a device-wide app list.
 
 `INTERNET` is declared solely for the per-query, consented F-Droid lookup described above; the complete update-compatibility analysis works without a network connection.
 

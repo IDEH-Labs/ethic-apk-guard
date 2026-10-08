@@ -1,10 +1,19 @@
 <resources>
     <string name="app_name">Ethic APK Guard</string>
 
+    <string name="eyebrow_analyze">ANALYZE BEFORE INSTALLING</string>
+    <string name="subtitle_analyze">Check an APK before installing it.</string>
+    <string name="privacy_banner">Local analysis. We never automatically install, uninstall, send, or keep your APK.</string>
+    <string name="btn_choose_apk">Choose an APK</string>
+    <string name="btn_choose_apk_desc">Choose an APK to analyze without installing it</string>
+    <string name="status_select_apk">Select an APK from the Android system file picker.</string>
+    <string name="limits_title">What it checks</string>
+    <string name="limits_desc">Package name, version, certificate, declared signing history, minimum Android, native libraries, DEX code, and new sensitive permissions. Recognizes split packages, but only installs single APKs. Android retains the final decision.</string>
+
     <!-- Menu & Projects -->
     <string name="menu_title">About us</string>
     <string name="ecosystem_section">Projects</string>
-    <string name="ecosystem_desc">Sovereign, offline, privacy-first copyleft apps by jpi59.</string>
+    <string name="ecosystem_desc">Sovereign, offline, privacy-first copyleft apps by IDEH Labs.</string>
     <string name="app_installed">Installed</string>
     <string name="app_open">Open</string>
     <string name="app_view">View</string>
@@ -16,6 +25,125 @@
     <string name="technical_info_section">Technical Integrity</string>
     <string name="package_id_label">Package ID</string>
     <string name="key_fingerprint_label">Signer Certificate (SHA-256)</string>
-    <string name="guard_badge">0 Permissions Declared · 100% Offline</string>
+    <string name="guard_badge">Local Preflight · Zero Telemetry</string>
     <string name="done">Done</string>
+
+    <!-- Analysis Status & Errors -->
+    <string name="status_analyzing">Analyzing locally…</string>
+    <string name="status_analysis_finished">Analysis complete. The APK was not installed.</string>
+    <string name="status_analysis_failed">Could not analyze selection.</string>
+    <string name="verdict_read_error">Could not read APK</string>
+    <string name="explanation_read_error">The file could not be opened by Android.</string>
+
+    <!-- Result Rows -->
+    <string name="row_package">Package</string>
+    <string name="row_candidate_apk">Selected APK</string>
+    <string name="row_installed">Installed</string>
+    <string name="row_signer">APK Signature</string>
+    <string name="row_libraries">Libraries</string>
+    <string name="row_added_permissions">New sensitive permissions</string>
+    <string name="row_security_impact">Security impact</string>
+    <string name="not_available">Not available</string>
+    <string name="not_installed">Not installed</string>
+    <string name="no_native_libs">no native libraries</string>
+    <string name="version_unnamed">unnamed</string>
+    <string name="version_format">%1$s · code %2$d</string>
+
+    <!-- Share Report -->
+    <string name="btn_share_report">Share technical report</string>
+    <string name="btn_share_report_desc">Share a technical summary without the APK</string>
+    <string name="share_dialog_title">Share technical report</string>
+    <string name="share_dialog_msg">Package identifier, versions, abbreviated signature, and detected changes will be shared. Neither the APK nor your app list is shared.</string>
+    <string name="share_dialog_choose">Choose destination</string>
+    <string name="share_chooser_title">Share report</string>
+    <string name="report_title">Ethic APK Guard Report</string>
+    <string name="report_result_label">Result</string>
+    <string name="report_fdroid_data_label">Public F-Droid Data</string>
+    <string name="report_desc_label">Description</string>
+    <string name="report_antifeatures_label">Anti-Features</string>
+    <string name="report_none_declared">none declared; not a certification</string>
+    <string name="report_disclaimer">Local analysis does not replace Android\'s final installation decision.</string>
+
+    <!-- F-Droid Lookup -->
+    <string name="btn_fdroid_lookup">Query public F-Droid data</string>
+    <string name="btn_fdroid_lookup_desc">Query F-Droid via an optional network connection</string>
+    <string name="btn_fdroid_done">Public F-Droid query completed</string>
+    <string name="fdroid_dialog_title">Query public sources</string>
+    <string name="fdroid_dialog_msg">Package identifier %1$s and version code %2$d will be sent over HTTPS to F-Droid and its public repository. The APK, its contents, its hash, and your app list are never sent. Remote servers may log the request.</string>
+    <string name="fdroid_dialog_query">Query</string>
+    <string name="status_querying_fdroid">Querying public F-Droid records…</string>
+    <string name="status_query_completed">Query completed. The APK was neither sent nor installed.</string>
+    <string name="status_query_failed">Could not query F-Droid: %s</string>
+    <string name="row_fdroid">F-Droid</string>
+    <string name="row_public_desc">Public description</string>
+    <string name="row_antifeatures">Declared Anti-Features</string>
+    <string name="row_verification">Reproducible verification</string>
+    <string name="row_query_limit">Query scope</string>
+    <string name="antifeatures_none">None declared in queried metadata; this does not certify safety.</string>
+    <string name="fdroid_not_found_versions">Does not appear in the main F-Droid repository.</string>
+    <string name="fdroid_not_found_desc">Metadata was not queried because the package is not listed in the main catalog.</string>
+    <string name="fdroid_not_found_verify">No F-Droid record.</string>
+    <string name="fdroid_not_found_note">This does not indicate whether the APK is safe or harmful; it only indicates it is not currently published in the main repository.</string>
+    <string name="fdroid_desc_unavailable">Description not available in queried metadata.</string>
+    <string name="fdroid_versions_published">Published in F-Droid: %d version(s).</string>
+    <string name="fdroid_suggested_version"> Suggested version: code %d.</string>
+    <string name="fdroid_candidate_in_catalog"> The selected version is listed in the catalog.</string>
+    <string name="fdroid_candidate_not_in_catalog"> The selected version is not listed in the current catalog.</string>
+    <string name="fdroid_verify_no_record">No public reproducible verification record for this package.</string>
+    <string name="fdroid_verify_version_found">There is a public verification report for this version.</string>
+    <string name="fdroid_verify_other_version">The package has public verification records, but none was found for the selected version.</string>
+    <string name="fdroid_note_default">Queried sources: public F-Droid API, metadata, and verification records. Absence of Anti-Features or reports is not a safety certification.</string>
+    <string name="fdroid_err_invalid_pkg">Package identifier is not valid for a public query.</string>
+    <string name="fdroid_err_http">F-Droid responded HTTP %d.</string>
+    <string name="fdroid_err_too_large">Public response is too large.</string>
+
+    <!-- Installation & Warnings -->
+    <string name="btn_blocked_signature">Update blocked due to signature mismatch</string>
+    <string name="btn_install_new">Install as separate application</string>
+    <string name="btn_open_installer">Open Android installer</string>
+    <string name="btn_install_desc">Ask Android to install the analyzed APK</string>
+    <string name="warn_new_app">This APK does not update an existing app: Android will treat it as a distinct application with separate data.</string>
+    <string name="warn_caution">There is a warning in the report. Android may reject the installation or require an additional decision.</string>
+    <string name="warn_safe">Compatibility appears valid according to local analysis, but Android retains the final decision.</string>
+    <string name="dialog_installer_title">Open Android installer</string>
+    <string name="dialog_installer_disclaimer">Ethic APK Guard will not install anything on its own. The official Android screen will open next, where you can cancel or confirm.</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_continue">Continue</string>
+    <string name="btn_open_settings">Open settings</string>
+    <string name="dialog_sources_title">Install unknown apps permission</string>
+    <string name="dialog_sources_msg">Android requires allowing Ethic APK Guard to request an installation. This does not grant silent installs: Android will still show the final confirmation.</string>
+    <string name="status_selection_unavailable">The selected file is no longer available. Please choose the APK again.</string>
+    <string name="status_installer_handoff">The Android installer will decide the next step.</string>
+    <string name="status_installer_failed">Android could not open the installer: %s</string>
+    <string name="clip_analyzed_apk">Analyzed APK</string>
+    <string name="err_network_format">network or format error</string>
+
+    <!-- Verdicts & Security Changes -->
+    <string name="verdict_split_title">Split APK bundle detected (%s)</string>
+    <string name="verdict_split_desc">This archive contains multiple APKs that must be installed together. Ethic APK Guard only analyzes and installs single APKs; do not extract or install individual parts separately. This does not indicate whether the file is safe or harmful.</string>
+    <string name="verdict_no_dex_title">Not a standalone installable APK</string>
+    <string name="verdict_no_dex_desc">classes.dex is missing. This may be a split module or incomplete file; do not install it as a standalone APK.</string>
+    <string name="verdict_unreadable_title">Could not read APK</string>
+    <string name="verdict_unreadable_desc">Android did not recognize a valid package manifest. The file was not modified.</string>
+    <string name="verdict_min_sdk_title">Device Android version is too old</string>
+    <string name="verdict_min_sdk_desc">The APK requires Android %1$d (API %1$d), but this device is running API %2$d.</string>
+    <string name="verdict_abi_mismatch_title">Architecture mismatch</string>
+    <string name="verdict_abi_mismatch_desc">The APK contains native libraries for %s, incompatible with this device\'s architecture.</string>
+    <string name="verdict_new_app_title">Fresh installation</string>
+    <string name="verdict_new_app_desc">No installed app matches the exact package %s. The visible name or icon is not sufficient for updates: Android will treat it as a distinct application with separate data.</string>
+    <string name="verdict_signature_mismatch_title">Not a safe update</string>
+    <string name="verdict_signature_mismatch_desc">The signing certificate of this APK does not match the installed app. Android will normally require uninstalling the existing app, erasing its local data.</string>
+    <string name="verdict_older_version_title">Not a newer version</string>
+    <string name="verdict_older_version_desc">The selected APK has version code %1$d and the installed app has %2$d. Android may reject it as an update or downgrade.</string>
+    <string name="verdict_compatible_title">Compatible update</string>
+    <string name="verdict_compatible_desc">Package identifier, version code, and signing certificate match. Android should preserve app data during update.</string>
+    <string name="verdict_rotation_title">Declared certificate rotation</string>
+    <string name="verdict_rotation_desc">The APK declares the installed certificate in its signing history. Android may accept a valid rotation, but this check does not replace the system installer.</string>
+    <string name="permissions_suffix"> Also requests new sensitive permissions: %s.</string>
+    <string name="sec_change_debuggable">Candidate APK allows debugging</string>
+    <string name="sec_change_cleartext">Enables unencrypted cleartext HTTP traffic</string>
+    <string name="sec_change_backup">Allows application backups</string>
+    <string name="sec_change_lowered_sdk">Lowers target SDK: %1$d → %2$d</string>
+    <string name="sec_change_exported">New exported component: %s</string>
+    <string name="err_open_selected_file">Could not open selected file.</string>
 </resources>

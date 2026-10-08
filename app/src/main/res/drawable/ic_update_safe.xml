@@ -1,4 +1,36 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="48dp" android:height="48dp" android:viewportWidth="48" android:viewportHeight="48">
-    <path android:fillColor="#176B5A" android:pathData="M24,3L42,10L42,22C42,34 34.3,41.6 24,45C13.7,41.6 6,34 6,22L6,10Z"/>
-    <path android:fillColor="#F7F8F4" android:pathData="M18,23L22,27L31,17L34,20L22,33L15,26Z"/>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/apk/res-auto"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path android:pathData="M54,4A50,50 0,1 0,54,104A50,50 0,1 0,54,4">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="15"
+                android:startY="15"
+                android:endX="95"
+                android:endY="95"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#818CF8" />
+                <item android:offset="1.0" android:color="#1D4ED8" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <!-- Security Shield Outer -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,24 L76,34 C76,57 63,73 54,80 C45,73 32,57 32,34 Z" />
+    <!-- Security Shield Inner -->
+    <path
+        android:fillColor="#4F46E5"
+        android:pathData="M54,29 L71,37 C71,55 60,68 54,74 C48,68 37,55 37,37 Z" />
+    <!-- APK Verification Checkmark -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillColor="#00000000"
+        android:pathData="M45,51 L51,57 L63,43" />
 </vector>
