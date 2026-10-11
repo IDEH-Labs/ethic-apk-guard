@@ -9,5 +9,6 @@ signing configuration.
 3. Verify the APK with `apksigner verify --verbose --print-certs` and publish a
    SHA-256 checksum alongside any release artifact.
 
-F-Droid builds from the public source and signs its own artifact. A local
-   release signature must not be presented as F-Droid's signature.
+F-Droid builds from the public source. The recipe uses reproducible builds: F-Droid
+   distributes the developer-signed APK only if its own build matches it byte for byte.
+   A local release signature must not be presented as F-Droid's signature.
