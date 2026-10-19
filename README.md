@@ -25,3 +25,7 @@ Release signing is local and opt-in. Provide `KEYSTORE_PATH`, `KEY_ALIAS`, `STOR
 This is not an APK installer, editor, general package manager, or generic APK inspector. Its single user-facing question is: **can this exact APK replace the app installed on this device without an avoidable loss of data, and what security-relevant changes accompany it?**
 
 The answer is based on local evidence and remains conservative. Android's package installer is the final authority, particularly for split packages and signing-certificate rotation.
+
+
+---
+An **[IDEH Labs](https://codeberg.org/IDEH-Labs)** project · [Codeberg](https://codeberg.org/IDEH-Labs/ethic-apk-guard)
